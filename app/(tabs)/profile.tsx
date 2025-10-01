@@ -9,7 +9,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/IconSymbol';
 import { colors, commonStyles, buttonStyles } from '@/styles/commonStyles';
@@ -23,6 +23,7 @@ const mockUser = {
   joinDate: 'March 2023',
   location: 'San Francisco, CA',
   bio: 'Passionate collector of vintage items and tech gadgets. Always looking for unique finds!',
+  role: 'admin', // This would come from your auth system
   stats: {
     listings: 24,
     sold: 18,
@@ -41,10 +42,48 @@ const menuItems = [
   { id: 'help', title: 'Help & Support', icon: 'questionmark.circle', count: null },
 ];
 
+// Admin menu items (only shown for admin users)
+const adminMenuItems = [
+  { id: 'admin', title: 'Admin Dashboard', icon: 'shield', count: null, description: 'Manage users, listings, and app settings' },
+];
+
 export default function ProfileScreen() {
+  const isAdmin = mockUser.role === 'admin' || mockUser.role === 'moderator';
+
   const handleMenuPress = (itemId: string) => {
     console.log('Menu item pressed:', itemId);
-    // In a real app, this would navigate to the appropriate screen
+    
+    if (itemId === 'admin') {
+      router.push('/admin/' as any);
+      return;
+    }
+    
+    // Handle other menu items
+    switch (itemId) {
+      case 'listings':
+        console.log('Navigate to my listings');
+        break;
+      case 'purchases':
+        console.log('Navigate to purchase history');
+        break;
+      case 'sales':
+        console.log('Navigate to sales history');
+        break;
+      case 'saved':
+        console.log('Navigate to saved items');
+        break;
+      case 'reviews':
+        console.log('Navigate to reviews');
+        break;
+      case 'settings':
+        console.log('Navigate to settings');
+        break;
+      case 'help':
+        console.log('Navigate to help');
+        break;
+      default:
+        console.log('Unknown menu item:', itemId);
+    }
   };
 
   const handleEditProfile = () => {
@@ -67,6 +106,29 @@ export default function ProfileScreen() {
         {item.count !== null && (
           <Text style={styles.menuCount}>{item.count}</Text>
         )}
+        <IconSymbol name="chevron.right" color={colors.textSecondary} size={16} />
+      </View>
+    </Pressable>
+  );
+
+  const renderAdminMenuItem = (item: typeof adminMenuItems[0]) => (
+    <Pressable
+      key={item.id}
+      style={[styles.menuItem, styles.adminMenuItem]}
+      onPress={() => handleMenuPress(item.id)}
+    >
+      <View style={styles.menuItemLeft}>
+        <View style={[styles.menuIcon, styles.adminIcon]}>
+          <IconSymbol name={item.icon as any} color={colors.error} size={20} />
+        </View>
+        <View style={styles.menuContent}>
+          <Text style={[styles.menuTitle, styles.adminTitle]}>{item.title}</Text>
+          {item.description && (
+            <Text style={styles.menuDescription}>{item.description}</Text>
+          )}
+        </View>
+      </View>
+      <View style={styles.menuItemRight}>
         <IconSymbol name="chevron.right" color={colors.textSecondary} size={16} />
       </View>
     </Pressable>
@@ -118,7 +180,15 @@ export default function ProfileScreen() {
           <View style={styles.profileHeader}>
             <Image source={{ uri: mockUser.avatar }} style={styles.avatar} />
             <View style={styles.profileInfo}>
-              <Text style={styles.userName}>{mockUser.name}</Text>
+              <View style={styles.nameRow}>
+                <Text style={styles.userName}>{mockUser.name}</Text>
+                {isAdmin && (
+                  <View style={styles.adminBadge}>
+                    <IconSymbol name="shield" color="white" size={12} />
+                    <Text style={styles.adminBadgeText}>ADMIN</Text>
+                  </View>
+                )}
+              </View>
               <Text style={styles.userHandle}>{mockUser.username}</Text>
               <View style={styles.ratingContainer}>
                 <IconSymbol name="star.fill" color={colors.accent} size={16} />
@@ -169,7 +239,17 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Menu */}
+        {/* Admin Section (only for admin users) */}
+        {isAdmin && (
+          <View style={styles.adminSection}>
+            <Text style={styles.sectionTitle}>Administration</Text>
+            <View style={styles.menuSection}>
+              {adminMenuItems.map(renderAdminMenuItem)}
+            </View>
+          </View>
+        )}
+
+        {/* Regular Menu */}
         <View style={styles.menuSection}>
           {menuItems.map(renderMenuItem)}
         </View>
@@ -236,11 +316,30 @@ const styles = StyleSheet.create({
   profileInfo: {
     flex: 1,
   },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    gap: 8,
+  },
   userName: {
     fontSize: 20,
     fontWeight: '700',
     color: colors.text,
-    marginBottom: 4,
+  },
+  adminBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.error,
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 4,
+  },
+  adminBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: 'white',
   },
   userHandle: {
     fontSize: 16,
@@ -312,6 +411,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     marginHorizontal: 16,
   },
+  adminSection: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.text,
+    marginHorizontal: 16,
+    marginBottom: 8,
+  },
   menuSection: {
     backgroundColor: colors.card,
     marginHorizontal: 16,
@@ -330,6 +439,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
+  adminMenuItem: {
+    backgroundColor: '#FFF5F5',
+    borderLeftWidth: 4,
+    borderLeftColor: colors.error,
+  },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -344,10 +458,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
+  adminIcon: {
+    backgroundColor: '#FFEBEE',
+  },
+  menuContent: {
+    flex: 1,
+  },
   menuTitle: {
     fontSize: 16,
     fontWeight: '500',
     color: colors.text,
+  },
+  adminTitle: {
+    color: colors.error,
+    fontWeight: '600',
+  },
+  menuDescription: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 2,
   },
   menuItemRight: {
     flexDirection: 'row',
