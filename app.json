@@ -1,34 +1,35 @@
+
 {
   "expo": {
-    "name": "Natively",
-    "slug": "Natively",
+    "name": "FunBuy",
+    "slug": "FunBuy",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/natively-dark.png",
+    "icon": "./assets/images/6d071ef7-2761-4f5b-b768-3fd9cd4fe92f.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/natively-dark.png",
+      "image": "./assets/images/6d071ef7-2761-4f5b-b768-3fd9cd4fe92f.png",
       "resizeMode": "contain",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#4ECDC4"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.Natively",
+      "bundleIdentifier": "com.funbuy.marketplace",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/natively-dark.png",
-        "backgroundColor": "#000000"
+        "foregroundImage": "./assets/images/6d071ef7-2761-4f5b-b768-3fd9cd4fe92f.png",
+        "backgroundColor": "#4ECDC4"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.Natively"
+      "package": "com.funbuy.marketplace"
     },
     "web": {
-      "favicon": "./assets/images/final_quest_240x240.png",
+      "favicon": "./assets/images/6d071ef7-2761-4f5b-b768-3fd9cd4fe92f.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -36,7 +37,7 @@
       "expo-router",
       "expo-web-browser"
     ],
-    "scheme": "natively",
+    "scheme": "funbuy",
     "experiments": {
       "typedRoutes": true
     },
