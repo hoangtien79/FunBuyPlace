@@ -38,5 +38,5 @@ jobs:
             npm install
           fi
 
-      - name: Run Grunt Build
+      - name: Run Grunt 
         run: npx grunt
